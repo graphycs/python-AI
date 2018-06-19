@@ -98,18 +98,22 @@ def classify(inputTree,featLabels,testVec):
 
 def storeTree(inputTree,filename):
     import pickle
-    fw = open(filename,'w')
+    fw = open(filename,'wb')
+    #inputTree=inputTree.encode('utf-8')
     pickle.dump(inputTree,fw)
     fw.close()
     
 def grabTree(filename):
     import pickle
-    fr = open(filename)
+    fr = open(filename,'rb')
     return pickle.load(fr)
     
 myDat,myLable = createDataSet()
 result= chooseBestFeatureToSplit(myDat)
 print( result )
- 
+mytree=createTree(myDat,myLable)
+storeTree(mytree,'classifierStorage.txt')
+loadtree=grabTree('classifierStorage.txt')
+print(loadtree)
  
     
