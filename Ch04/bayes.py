@@ -9,6 +9,10 @@ Created on Oct 19, 2010
 import os
 import chardet
 from numpy import *
+import feedparser
+import nltk  
+import nltk.data
+from nltk.tokenize import WordPunctTokenizer
 
 def loadDataSet():
     postingList=[['my', 'dog', 'has', 'flea', 'problems', 'help', 'please'],
@@ -82,8 +86,32 @@ def testingNB():
 
 def textParse(bigString):    #input is big string, #output is word list
     import re
+    print('the context ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',bigString)
     listOfTokens = re.split(r'\W*', bigString)
-    return [tok.lower() for tok in listOfTokens if len(tok) > 2] 
+    print('the listOfTokens ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',listOfTokens)
+    wordList=[]
+    for tok in listOfTokens:
+		
+        if len(tok) > 2 :
+           print('the tok ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',tok)
+           wordList.append(tok.lower())
+	
+    print('the word ^^^^^^^^^^^^^^^^^^^^',wordList)
+    return wordList
+    
+def splitSentence(paragraph):  
+    tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')  
+    sentences = tokenizer.tokenize(paragraph)  
+    return sentences  
+ 
+ '''
+	USE   nltk to split word into list
+ '''   
+def wordtokenizer(sentence):  
+    #分段  
+    words = WordPunctTokenizer().tokenize(sentence)  
+    return words
+    
     
 def spamTest():
     import io  
@@ -139,27 +167,33 @@ def calcMostFreq(vocabList,fullText):
     freqDict = {}
     for token in vocabList:
         freqDict[token]=fullText.count(token)
-    sortedFreq = sorted(freqDict.iteritems(), key=operator.itemgetter(1), reverse=True) 
+    sortedFreq = sorted(freqDict.items(), key=operator.itemgetter(1), reverse=True) 
     return sortedFreq[:30]       
 
 def localWords(feed1,feed0):
-    import feedparser
+   
     docList=[]; classList = []; fullText =[]
+    print( 'feed1 entries length: ',len(feed1['entries']),'\nfeed0 entries length: ',len(feed0['entries']) )
     minLen = min(len(feed1['entries']),len(feed0['entries']))
+    print( minLen)
     for i in range(minLen):
-        wordList = textParse(feed1['entries'][i]['summary'])
+        wordList = wordtokenizer(feed1['entries'][i]['summary'])
+        print('wordList  feed1 ***********',wordList)
         docList.append(wordList)
         fullText.extend(wordList)
         classList.append(1) #NY is class 1
-        wordList = textParse(feed0['entries'][i]['summary'])
+        wordList = wordtokenizer(feed0['entries'][i]['summary'])
+        print('wordList  feed0 ***********',wordList)
         docList.append(wordList)
         fullText.extend(wordList)
         classList.append(0)
+    print('docList-------------',docList)
     vocabList = createVocabList(docList)#create vocabulary
     top30Words = calcMostFreq(vocabList,fullText)   #remove top 30 words
+    print(vocabList,'**************',top30Words)
     for pairW in top30Words:
         if pairW[0] in vocabList: vocabList.remove(pairW[0])
-    trainingSet = range(2*minLen); testSet=[]           #create test set
+    trainingSet = list( range(2*minLen) ); testSet=[]           #create test set
     for i in range(20):
         randIndex = int(random.uniform(0,len(trainingSet)))
         testSet.append(trainingSet[randIndex])
@@ -203,4 +237,12 @@ def getTopWords(ny,sf):
 
 # ~ testingNB()
 
-spamTest()
+# ~ spamTest()
+nf=feedparser.parse('http://www.nasa.gov/rss/dyn/image_of_the_day.rss')
+sf=feedparser.parse('https://sports.yahoo.com/nba/rss.xml')
+
+# ~ print(nf)
+# ~ print(sf)
+
+vocalist,psf,pnf=localWords(sf,nf)
+
