@@ -1,8 +1,13 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 '''
 Created on Oct 19, 2010
 
 @author: Peter
 '''
+import os
+import chardet
 from numpy import *
 
 def loadDataSet():
@@ -81,18 +86,28 @@ def textParse(bigString):    #input is big string, #output is word list
     return [tok.lower() for tok in listOfTokens if len(tok) > 2] 
     
 def spamTest():
+    import io  
+    import sys   
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf8') #改变标准输出的默认编码 
     docList=[]; classList = []; fullText =[]
     for i in range(1,26):
-        wordList = textParse(open('email/spam/%d.txt' % i).read())
+        filename = 'email/spam/%d.txt' % (i)
+        print(filename)
+        wordList = textParse(open(filename).read())
+       
         docList.append(wordList)
         fullText.extend(wordList)
         classList.append(1)
-        wordList = textParse(open('email/ham/%d.txt' % i).read())
+        filename = 'email/ham/%d.txt' % (i)
+        print(filename)
+        filecontext=open(filename).read()
+        wordList = textParse(filecontext)
+    
         docList.append(wordList)
         fullText.extend(wordList)
         classList.append(0)
     vocabList = createVocabList(docList)#create vocabulary
-    trainingSet = range(50); testSet=[]           #create test set
+    trainingSet =  list(range(50)); testSet=[]           #create test set
     for i in range(10):
         randIndex = int(random.uniform(0,len(trainingSet)))
         testSet.append(trainingSet[randIndex])
@@ -110,7 +125,15 @@ def spamTest():
             print ("classification error",docList[docIndex])
     print( 'the error rate is: ',float(errorCount)/len(testSet))
     #return vocabList,fullText
-
+    
+def getEncode(filename):
+	bytes = min(32, os.path.getsize(filename))  
+	raw = open(filename, 'rb').read(bytes)  
+	result = chardet.detect(raw)  
+	encoding = result['encoding'] 
+	return encoding
+	
+	
 def calcMostFreq(vocabList,fullText):
     import operator
     freqDict = {}
@@ -170,10 +193,14 @@ def getTopWords(ny,sf):
     for item in sortedNY:
         print (item[0])
         
-postingList,classVec=loadDataSet()
-mywordlist=createVocabList(postingList)
-print(mywordlist)
-tranWord=setOfWords2Vec(mywordlist,postingList[0])
-print(tranWord)
-tranWord=setOfWords2Vec(mywordlist,postingList[3])
-print(tranWord)
+# ~ postingList,classVec=loadDataSet()
+# ~ mywordlist=createVocabList(postingList)
+# ~ print(mywordlist)
+# ~ tranWord=setOfWords2Vec(mywordlist,postingList[0])
+# ~ print(tranWord)
+# ~ tranWord=setOfWords2Vec(mywordlist,postingList[3])
+# ~ print(tranWord)
+
+# ~ testingNB()
+
+spamTest()
