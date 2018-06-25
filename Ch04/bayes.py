@@ -84,33 +84,22 @@ def testingNB():
     thisDoc = array(setOfWords2Vec(myVocabList, testEntry))
     print( testEntry,'classified as: ',classifyNB(thisDoc,p0V,p1V,pAb) )
 
-def textParse(bigString):    #input is big string, #output is word list
-    import re
-    print('the context ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',bigString)
-    listOfTokens = re.split(r'\W*', bigString)
-    print('the listOfTokens ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',listOfTokens)
-    wordList=[]
-    for tok in listOfTokens:
-		
-        if len(tok) > 2 :
-           print('the tok ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',tok)
-           wordList.append(tok.lower())
-	
-    print('the word ^^^^^^^^^^^^^^^^^^^^',wordList)
-    return wordList
+def textParse(bigString):                                                   #将字符串转换为字符列表
+    listOfTokens = re.split(r'\W*', bigString)                              #将特殊符号作为切分标志进行字符串切分，即非字母、非数字
+    return [tok.lower() for tok in listOfTokens if len(tok) > 2]            #除了单个字母，例如大写的I，其它单词变成小写
     
 def splitSentence(paragraph):  
     tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')  
     sentences = tokenizer.tokenize(paragraph)  
-    return sentences  
+    return sentences
  
 '''
 	USE   nltk to split word into list
-'''   
+'''	
 def wordtokenizer(sentence):  
     #分段  
-    words = WordPunctTokenizer().tokenize(sentence)  
-    return words
+    words = WordPunctTokenizer().tokenize(sentence) 
+    return [tok.lower() for tok in words if len(tok) > 2]  
     
     
 def spamTest():
@@ -209,6 +198,9 @@ def localWords(feed1,feed0):
         if classifyNB(array(wordVector),p0V,p1V,pSpam) != classList[docIndex]:
             errorCount += 1
     print ('the error rate is: ',float(errorCount)/len(testSet) )
+    print ('the  vocabList is: ',vocabList )
+    print ('the p0V is: ',p0V )
+    print ('the p0V is: ',p1V )
     return vocabList,p0V,p1V
 
 def getTopWords(ny,sf):
