@@ -104,9 +104,9 @@ def splitSentence(paragraph):
     sentences = tokenizer.tokenize(paragraph)  
     return sentences  
  
- '''
+'''
 	USE   nltk to split word into list
- '''   
+'''   
 def wordtokenizer(sentence):  
     #分段  
     words = WordPunctTokenizer().tokenize(sentence)  
