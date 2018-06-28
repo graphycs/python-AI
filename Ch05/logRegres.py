@@ -17,6 +17,26 @@ def loadDataSet():
 def sigmoid(inX):
     return 1.0/(1+exp(-inX))
 
+
+# ~ >>> zeros(3)
+# ~ array([ 0.,  0.,  0.])
+# ~ >>> zeros((3,3))
+# ~ array([[ 0.,  0.,  0.],
+       # ~ [ 0.,  0.,  0.],
+       # ~ [ 0.,  0.,  0.]])
+
+# ~ ones(): 可以用来构造全一矩阵
+# ~ >>> ones((3,3))
+# ~ array([[ 1.,  1.,  1.],
+       # ~ [ 1.,  1.,  1.],
+       # ~ [ 1.,  1.,  1.]])
+
+# ~ eyes(): 可以用来构造单位矩阵
+# ~ >>> eye(3)
+# ~ array([[ 1.,  0.,  0.],
+       # ~ [ 0.,  1.,  0.],
+       # ~ [ 0.,  0.,  1.]])
+       
 def gradAscent(dataMatIn, classLabels):
     dataMatrix = mat(dataMatIn)             #convert to NumPy matrix
     labelMat = mat(classLabels).transpose() #convert to NumPy matrix
@@ -102,12 +122,24 @@ def colicTest():
         if int(classifyVector(array(lineArr), trainWeights))!= int(currLine[21]):
             errorCount += 1
     errorRate = (float(errorCount)/numTestVec)
-    print "the error rate of this test is: %f" % errorRate
+    print ("the error rate of this test is: %f" % errorRate)
     return errorRate
 
 def multiTest():
     numTests = 10; errorSum=0.0
     for k in range(numTests):
         errorSum += colicTest()
-    print "after %d iterations the average error rate is: %f" % (numTests, errorSum/float(numTests))
-        
+    print( "after %d iterations the average error rate is: %f" % (numTests, errorSum/float(numTests)) )
+    
+dataMat,labelMat=loadDataSet()
+print('dataMat***************')
+print(dataMat)
+print('labelMat*****************')
+print(labelMat)
+
+# ~ weights =gradAscent(dataMat,labelMat)
+# ~ print('weights************',weights)
+# ~ plotBestFit(weights.getA()) 
+
+weights=stocGradAscent0(array(dataMat),labelMat)    
+plotBestFit(weights) 
