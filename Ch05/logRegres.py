@@ -86,7 +86,7 @@ def stocGradAscent1(dataMatrix, classLabels, numIter=150):
     m,n = shape(dataMatrix)
     weights = ones(n)   #initialize to all ones
     for j in range(numIter):
-        dataIndex = range(m)
+        dataIndex = list(range(m))
         for i in range(m):
             alpha = 4/(1.0+j+i)+0.0001    #apha decreases with iteration, does not 
             randIndex = int(random.uniform(0,len(dataIndex)))#go to 0 because of the constant
@@ -141,5 +141,9 @@ print(labelMat)
 # ~ print('weights************',weights)
 # ~ plotBestFit(weights.getA()) 
 
-weights=stocGradAscent0(array(dataMat),labelMat)    
+# ~ weights=stocGradAscent0(array(dataMat),labelMat)    
+# ~ plotBestFit(weights) 
+
+
+weights=stocGradAscent1(array(dataMat),labelMat,20)    
 plotBestFit(weights) 
