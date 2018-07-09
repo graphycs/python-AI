@@ -105,6 +105,8 @@ def calcEk(oS, k):
 def selectJ(i, oS, Ei):         #this is the second choice -heurstic, and calcs Ej
     maxK = -1; maxDeltaE = 0; Ej = 0
     oS.eCache[i] = [1,Ei]  #set valid #choose the alpha that gives the maximum delta E
+    # ~ nonzeros(a)返回数组a中值不为零的元素的下标，它的返回值是一个长度为a.ndim(数组a的轴数)的元组，元组的每个元素都是一个整数数组，
+    # ~ 其值为非零元素的下标在对应轴上的值。例如对于一维布尔数组b1，nonzero(b1)所得到的是一个长度为1的元组，它表示b1[0]和b1[2]的值不为0(False)。
     validEcacheList = nonzero(oS.eCache[:,0].A)[0]
     if (len(validEcacheList)) > 1:
         for k in validEcacheList:   #loop through valid Ecache values and find the one that maximizes delta E
@@ -350,3 +352,8 @@ def smoPK(dataMatIn, classLabels, C, toler, maxIter):    #full Platt SMO
 dataMat,labelMat =loadDataSet('testSet.txt')
 print('dataMat***************',dataMat)
 print('labelMat***************',labelMat)
+
+b,alphas=smoSimple(dataMat, labelMat, 0.6, 0.001, 40)
+print('b**********',b)
+print('alphas**********',alphas)
+
