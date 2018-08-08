@@ -18,11 +18,26 @@ def loadDataSet(fileName):      #general function to parse tab -delimited floats
         labelMat.append(float(curLine[-1]))
     return dataMat,labelMat
 
+# linalg
+#1 使用inv函数计算逆矩阵
+#   inv = np.linalg.inv(A)
+#2 调用solve函数求解线性方程
+#   x = np.linalg.solve(B,b)
+#3 调用eigvals函数求解特征值
+#  c0 = np.linalg.eigvals(C)
+#4 使用eig函数求解特征值和特征向量 (该函数将返回一个元组，按列排放着特征值和对应的特征向量，其中第一列为特征值，第二列为特征向量)
+#  c1,c2 = np.linalg.eig(C)
+#5 .奇异值分解
+# SVD（Singular Value Decomposition，奇异值分解）是一种因子分解运算，将一个矩阵分解为3个矩阵的乘积
+# numpy.linalg模块中的svd函数可以对矩阵进行奇异值分解。该函数返回3个矩阵——U、Sigma和V，其中U和V是正交矩阵，Sigma包含输入矩阵的奇异值。
+# 6. 行列式
+# numpy.linalg模块中的det函数可以计算矩阵的行列式
+
 def standRegres(xArr,yArr):
     xMat = mat(xArr); yMat = mat(yArr).T
     xTx = xMat.T*xMat
-    if linalg.det(xTx) == 0.0:
-        print "This matrix is singular, cannot do inverse"
+    if linalg.det(xTx) == 0.0:#numpy.linalg模块包含线性代数的函数。使用这个模块，可以计算逆矩阵、求特征值、解线性方程组以及求解行列式等。
+        print ("This matrix is singular, cannot do inverse")
         return
     ws = xTx.I * (xMat.T*yMat)
     return ws
@@ -36,7 +51,7 @@ def lwlr(testPoint,xArr,yArr,k=1.0):
         weights[j,j] = exp(diffMat*diffMat.T/(-2.0*k**2))
     xTx = xMat.T * (weights * xMat)
     if linalg.det(xTx) == 0.0:
-        print "This matrix is singular, cannot do inverse"
+        print ("This matrix is singular, cannot do inverse")
         return
     ws = xTx.I * (xMat.T * (weights * yMat))
     return testPoint * ws
@@ -63,7 +78,7 @@ def ridgeRegres(xMat,yMat,lam=0.2):
     xTx = xMat.T*xMat
     denom = xTx + eye(shape(xMat)[1])*lam
     if linalg.det(denom) == 0.0:
-        print "This matrix is singular, cannot do inverse"
+        print ("This matrix is singular, cannot do inverse")
         return
     ws = denom.I * (xMat.T*yMat)
     return ws
@@ -130,7 +145,7 @@ def scrapePage(inFile,outFile,yr,numPce,origPrc):
             newFlag = 0.0
         soldUnicde = currentRow[0].findAll('td')[3].findAll('span')
         if len(soldUnicde)==0:
-            print "item #%d did not sell" % i
+            print ("item #%d did not sell" % i)
         else:
             soldPrice = currentRow[0].findAll('td')[4]
             priceStr = soldPrice.text
@@ -138,7 +153,7 @@ def scrapePage(inFile,outFile,yr,numPce,origPrc):
             priceStr = priceStr.replace(',','') #strips out ,
             if len(soldPrice)>1:
                 priceStr = priceStr.replace('Free shipping', '') #strips out Free Shipping
-            print "%s\t%d\t%s" % (priceStr,newFlag,title)
+            print ("%s\t%d\t%s" % (priceStr,newFlag,title))
             fw.write("%d\t%d\t%d\t%f\t%s\n" % (yr,numPce,newFlag,origPrc,priceStr))
         i += 1
         currentRow = soup.findAll('table', r="%d" % i)
@@ -185,5 +200,5 @@ def crossValidation(xArr,yArr,numVal=10):
     xMat = mat(xArr); yMat=mat(yArr).T
     meanX = mean(xMat,0); varX = var(xMat,0)
     unReg = bestWeights/varX
-    print "the best model from Ridge Regression is:\n",unReg
-    print "with constant term: ",-1*sum(multiply(meanX,unReg)) + mean(yMat)
+    print( "the best model from Ridge Regression is:\n",unReg)
+    print( "with constant term: ",-1*sum(multiply(meanX,unReg)) + mean(yMat) )
