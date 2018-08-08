@@ -236,7 +236,7 @@ def testDigits(kTup=('rbf', 10)):
     dataArr,labelArr = loadImages('trainingDigits')
     b,alphas = smoP(dataArr, labelArr, 200, 0.0001, 10000, kTup)
     datMat=mat(dataArr); labelMat = mat(labelArr).transpose()
-    svInd=nonzero(alphas.A>0)[0]
+    svInd=nonzero(alphas.A>0)[0]  #python中一个matrix矩阵名.A 代表将 矩阵转化为array数组类型
     sVs=datMat[svInd] 
     labelSV = labelMat[svInd];
     print ("there are %d Support Vectors" % shape(sVs)[0])
@@ -349,11 +349,38 @@ def smoPK(dataMatIn, classLabels, C, toler, maxIter):    #full Platt SMO
         print ("iteration number: %d" % iter)
     return oS.b,oS.alphas
     
-dataMat,labelMat =loadDataSet('testSet.txt')
-print('dataMat***************',dataMat)
-print('labelMat***************',labelMat)
+# ~ dataMat,labelMat =loadDataSet('testSet.txt')
+# ~ print('dataMat***************',dataMat)
+# ~ print('labelMat***************',labelMat)
 
-b,alphas=smoSimple(dataMat, labelMat, 0.6, 0.001, 40)
-print('b**********',b)
-print('alphas**********',alphas)
+# ~ b,alphas=smoSimple(dataMat, labelMat, 0.6, 0.001, 40)
+# ~ print('b**********',b)
+# ~ print('alphas**********',alphas)
+
+# ~ dataArr, lableArr= loadDataSet('testSet.txt')
+# ~ b, alphas=smoP(dataArr,lableArr,0.6,0.001,40)
+# ~ print('b-------',b)
+# ~ print('alphas-------',alphas)
+
+
+
+import numpy as np 
+# ~ arrayList=[[1,2,3,4,5,6],[11,12,13,14,15,16],[-1,2,-3,-4,-5,-6] ]
+# ~ arrayArray=mat(arrayList)
+
+# ~ arrayTest = nonzero(arrayArray>0)
+
+# ~ print(arrayArray>0)
+# ~ print(arrayTest)
+# ~ print(arrayTest[0])
+
+
+arrayList=[[[1,2],[1,2]],[[11,12],[13,14]],[[-1,2],[-3,-4]] ]
+arrayArray=mat(arrayList)
+
+arrayTest = nonzero(arrayArray>0)
+
+print(arrayArray>0)
+print(arrayTest)
+print(arrayTest[0])
 
