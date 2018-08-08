@@ -4,6 +4,7 @@ Created on Jan 8, 2011
 @author: Peter
 '''
 from numpy import *
+import matplotlib.pyplot as plt
 
 def loadDataSet(fileName):      #general function to parse tab -delimited floats
     numFeat = len(open(fileName).readline().split('\t')) - 1 #get number of fields 
@@ -202,3 +203,27 @@ def crossValidation(xArr,yArr,numVal=10):
     unReg = bestWeights/varX
     print( "the best model from Ridge Regression is:\n",unReg)
     print( "with constant term: ",-1*sum(multiply(meanX,unReg)) + mean(yMat) )
+    
+#main test 
+
+xArr,yArr=loadDataSet('ex0.txt')
+print('xArr________________',xArr)
+print('yArr________________',yArr)
+ws=standRegres(xArr,yArr)
+print('ws****************',ws)
+
+xMat=mat(xArr)
+yMat=mat(yArr)
+yHat=xMat* ws 
+
+print('this is the diffrence between yhat and ymat',corrcoef(yHat.T,yMat))
+
+fig=plt.figure()
+ax=fig.add_subplot(111)
+xCopy=xMat.copy()
+xCopy.sort(0)
+yHatCopy=xCopy*ws
+ax.plot(xCopy[:,1] ,yHatCopy)
+plt.show()
+
+
