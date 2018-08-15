@@ -4,6 +4,7 @@ Tree-Based Regression Methods
 @author: Peter Harrington
 '''
 from numpy import *
+import matplotlib.pyplot as plt
 
 def loadDataSet(fileName):      #general function to parse tab -delimited floats
     dataMat = []                #assume last column is target value
@@ -236,10 +237,11 @@ print(myTree)
 """
 
 
-"""
+""" 比较树
 myTree=createTree(myMat,ops=(0,1))
 print("*************myTree****************")
 print(myTree)
+"""
 """
 
 myDat2= loadDataSet("ex2.txt")
@@ -259,3 +261,33 @@ print(myTree2Test)
 myTreeCompare=prune(myTree2,myMat2Test)
 print("*************myTreeCompare****************")
 print(myTreeCompare)
+"""
+trainMat= mat(loadDataSet("bikeSpeedVsIq_train.txt"))
+trainTestMat= mat(loadDataSet("bikeSpeedVsIq_test.txt"))
+# ~ fig=plt.figure()
+# ~ ax=fig.add_subplot(111)
+# ~ ax.scatter(trainTestMat[:,0].A.reshape(1,-1),trainTestMat[:,1].A.reshape(1,-1), c = 'blue')
+# ~ plt.xlabel('speed of riding')
+# ~ plt.ylabel('IQ')
+# ~ plt.show()
+    
+    
+trainTree=createTree(trainMat,ops=(1,20))
+print('trainTree***********',trainTree)
+yHat=createForeCast(trainTree,trainTestMat[:,0])
+print('yHat***********',yHat)
+print('trainTestMat**********',trainTestMat[:,1])
+
+print("corrcoef**************",corrcoef(yHat,trainTestMat[:,1],rowvar=0)[0,1])
+
+
+trainTree2=createTree(trainMat,modelLeaf,modelErr,ops=(1,20))
+print('trainTree***********',trainTree2)
+yHat2=createForeCast(trainTree2,trainTestMat[:,0],modelTreeEval)
+print('yHat2***********',yHat2)
+
+print("corrcoef2**************",corrcoef(yHat2,trainTestMat[:,1],rowvar=0)[0,1])
+
+
+ws,x,y=linearSolve(trainTestMat)
+print("ws***************",ws)
