@@ -1,6 +1,6 @@
 from numpy import *
 
-from Tkinter import *
+from tkinter import *
 import regTrees
 
 import matplotlib
@@ -8,11 +8,14 @@ matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
+    #tolS = ops[0]                          #允许的误差下降值，用户指定参数，用于控制函数的停止时机
+    #tolN = ops[1]                          #切分的最小样本数，用户指定参数，用于控制函数的停止时机
+    #tolS,tolN进行的实际上是一种预剪枝处理
 def reDraw(tolS,tolN):
     reDraw.f.clf()        # clear the figure
     reDraw.a = reDraw.f.add_subplot(111)
     if chkBtnVar.get():
-        if tolN < 2: tolN = 2
+        if tolN < 2:tolN = 2
         myTree=regTrees.createTree(reDraw.rawDat, regTrees.modelLeaf,\
                                    regTrees.modelErr, (tolS,tolN))
         yHat = regTrees.createForeCast(myTree, reDraw.testDat, \
@@ -20,7 +23,10 @@ def reDraw(tolS,tolN):
     else:
         myTree=regTrees.createTree(reDraw.rawDat, ops=(tolS,tolN))
         yHat = regTrees.createForeCast(myTree, reDraw.testDat)
-    reDraw.a.scatter(reDraw.rawDat[:,0], reDraw.rawDat[:,1], s=5) #use scatter for data set
+    #plt.scatter(dataSet[0],dataSet[1])#2改成 plt.scatter(dataSet[0].tolist(),dataSet[1].tolist()) 
+	# 或plt.scatter(array(dataSet[0]),array(dataSet[1].tolist())) 、
+	# type(dataSet[0])==<class 'numpy.matrixlib.defmatrix.matrix'>是矩阵对象不是一维（1-D）的
+    reDraw.a.scatter(array(reDraw.rawDat[:,0]), array(reDraw.rawDat[:,1]).tolist(), s=5) #use scatter for data set
     reDraw.a.plot(reDraw.testDat, yHat, linewidth=2.0) #use plot for yHat
     reDraw.canvas.show()
     
@@ -45,11 +51,6 @@ def drawNewTree():
     
 root=Tk()
 
-reDraw.f = Figure(figsize=(5,4), dpi=100) #create canvas
-reDraw.canvas = FigureCanvasTkAgg(reDraw.f, master=root)
-reDraw.canvas.show()
-reDraw.canvas.get_tk_widget().grid(row=0, columnspan=3)
-
 Label(root, text="tolN").grid(row=1, column=0)
 tolNentry = Entry(root)
 tolNentry.grid(row=1, column=1)
@@ -65,6 +66,14 @@ chkBtn.grid(row=3, column=0, columnspan=2)
 
 reDraw.rawDat = mat(regTrees.loadDataSet('sine.txt'))
 reDraw.testDat = arange(min(reDraw.rawDat[:,0]),max(reDraw.rawDat[:,0]),0.01)
-reDraw(1.0, 10)
+
+
+
+reDraw.f = Figure(figsize=(5,4), dpi=100) #create canvas
+reDraw.canvas = FigureCanvasTkAgg(reDraw.f, master=root)
+reDraw.canvas.show()
+reDraw.canvas.get_tk_widget().grid(row=0, columnspan=3)
+#reDraw(1.0, 10)
+
                
 root.mainloop()
